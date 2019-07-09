@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Baking</string>
+    <string name="cakename">CakeName</string>
+    <string name="cake_image">cake Image</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="steps">Steps</string>
+    <string name="ingredient_measure">ingredient_measure</string>
+    <string name="ingredient_quantity">ingredient_quantity</string>
+    <string name="arrow_image">arrow image</string>
+    <string name="play_image">Play Image</string>
+    <string name="id">id</string>
+    <string name="shortDescribtion">short_desc</string>
+    <string name="description">description</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="widget_item_format">%1$d. %2$s, %3$s %4$s</string>
+
+
+</resources>

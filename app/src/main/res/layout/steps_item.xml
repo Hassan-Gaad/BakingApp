@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="55sp"
+    android:layout_margin="1sp"
+    android:layout_weight="1"
+    android:padding="5dp"
+    app:cardCornerRadius="3dp">
+
+<LinearLayout
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:layout_marginStart="5sp"
+    android:layout_marginEnd="5sp"
+    android:background="@drawable/list_item_selector"
+    >
+
+    <TextView
+        android:id="@+id/tv_step_id"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:paddingStart="2sp"
+        android:paddingEnd="2sp"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        tools:text="@string/id" />
+
+    <TextView
+        android:id="@+id/tv_step_short_discribtion"
+        android:layout_width="190sp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:paddingStart="2sp"
+        android:paddingEnd="2sp"
+        android:textSize="18sp"
+        tools:text="@string/shortDescribtion" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/iv_play"
+            android:layout_width="30sp"
+            android:layout_height="55sp"
+            android:layout_weight="1"
+            android:contentDescription="@string/play_image"
+            app:srcCompat="@drawable/play_image" />
+
+        <ImageView
+            android:id="@+id/iv_arrow"
+            android:layout_width="30sp"
+            android:layout_height="55sp"
+            android:layout_weight="1"
+            android:contentDescription="@string/arrow_image"
+            android:paddingStart="2sp"
+            android:paddingEnd="2sp"
+            app:srcCompat="@drawable/arrow" />
+    </LinearLayout>
+
+
+
+</LinearLayout>
+</androidx.cardview.widget.CardView>
