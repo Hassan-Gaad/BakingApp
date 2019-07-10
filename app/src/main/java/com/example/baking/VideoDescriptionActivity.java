@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -17,6 +18,7 @@ import com.example.baking.fragments.DescriptionFragment;
 import com.example.baking.fragments.VideoFragment;
 import com.example.baking.models.Steps;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -39,6 +41,7 @@ public class VideoDescriptionActivity extends AppCompatActivity {
     int clickedStep;
 
 
+
     DescriptionFragment descriptionFragment;
     VideoFragment videoFragment;
     @Override
@@ -46,14 +49,16 @@ public class VideoDescriptionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_description);
         ButterKnife.bind(this);
+
         stepsList = getIntent().getParcelableArrayListExtra(STEPS_LIST_KEY);
         clickedStep = getIntent().getIntExtra(CLICKED_STEP_KEY, 0);
 
-
-        if (savedInstanceState == null) {
-
-            populateFragments();
+        if (savedInstanceState!=null){
+            stepsList=savedInstanceState.getParcelableArrayList(STEPS_LIST_KEY);
+            clickedStep=savedInstanceState.getInt(CLICKED_STEP_KEY);
         }
+            populateFragments();
+
 
         forward.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,10 +114,19 @@ public class VideoDescriptionActivity extends AppCompatActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            //must add after remove
+            descriptionFragment = new DescriptionFragment();
+            descriptionFragment.setStepList(stepsList);
+            descriptionFragment.setStepListIndex(clickedStep);
+            FragmentManager DfragmentManager = getSupportFragmentManager();
+            DfragmentManager.beginTransaction()
+                    .add(R.id.description_container, descriptionFragment)
+                    .commit();
+
             params.width= ViewGroup.LayoutParams.MATCH_PARENT;
             params.height=ViewGroup.LayoutParams.WRAP_CONTENT;
             videoContainer.setLayoutParams(params);
-           populateFragments();
+           //populateFragments();
             if(getSupportActionBar()!=null) {
                 getSupportActionBar().hide();
             }
@@ -145,5 +159,12 @@ public class VideoDescriptionActivity extends AppCompatActivity {
     }
 
 
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(STEPS_LIST_KEY,(ArrayList<? extends Parcelable>) stepsList);
+        outState.putInt(CLICKED_STEP_KEY,clickedStep);
+    }
 
 }

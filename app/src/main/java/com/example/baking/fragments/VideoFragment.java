@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.baking.R;
 import com.example.baking.models.Steps;
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.LoadControl;
@@ -47,8 +48,13 @@ public class VideoFragment extends Fragment {
     private SimpleExoPlayer mExoPlayer;
     private static String STEPS_LIST_KEY="stepsList";
     private static String STEP_LIST_INDEX="stepListIndex";
+
+    private static String PLAYER_POSITION="position";
+    private static String PLAYER_STATE="player_state";
     private static String TAG =DescriptionFragment.class.getSimpleName();
 
+    long position ;
+    boolean isPlayWhenReady;
     public VideoFragment(){}
 
     @Nullable
@@ -58,6 +64,8 @@ public class VideoFragment extends Fragment {
         if (savedInstanceState!=null){
             mStepList=savedInstanceState.getParcelableArrayList(STEPS_LIST_KEY);
             stepListIndex=savedInstanceState.getInt(STEP_LIST_INDEX);
+            position=savedInstanceState.getLong(PLAYER_POSITION, C.TIME_UNSET);
+            isPlayWhenReady=savedInstanceState.getBoolean(PLAYER_STATE,true);
         }
 
         View view=inflater.inflate(R.layout.video_fragment,container,false);
@@ -125,9 +133,9 @@ public class VideoFragment extends Fragment {
                     new DefaultExtractorsFactory(),
                     null,
                     null);
-
             mExoPlayer.prepare(mediaSource);
-            mExoPlayer.setPlayWhenReady(true);
+            mExoPlayer.seekTo(position);
+            mExoPlayer.setPlayWhenReady(isPlayWhenReady);
         }
 
 
@@ -143,27 +151,27 @@ public class VideoFragment extends Fragment {
     public void onPause() {
         super.onPause();
         if (mExoPlayer != null) {
-            mExoPlayer.setPlayWhenReady(false);
+            position=mExoPlayer.getCurrentPosition();
+            isPlayWhenReady=mExoPlayer.getPlayWhenReady();
         }
+        releasePlayer();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mExoPlayer.setPlayWhenReady(true);
+        mExoPlayer.setPlayWhenReady(isPlayWhenReady);
+        mExoPlayer.seekTo(position);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        releasePlayer();
 
-    }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putParcelableArrayList(STEPS_LIST_KEY, (ArrayList<? extends Parcelable>) mStepList);
         outState.putInt(STEP_LIST_INDEX,stepListIndex);
+        outState.putLong(PLAYER_POSITION,position);
+        outState.putBoolean(PLAYER_STATE,isPlayWhenReady);
     }
 
     public void setStepList(List<Steps> stepList){

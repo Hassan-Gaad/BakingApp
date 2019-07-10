@@ -43,9 +43,6 @@ public class DescriptionFragment extends Fragment {
         tvDescription=view.findViewById(R.id.tv_stepDescription);
         textViewShortDescription=view.findViewById(R.id.tv_step_video_Short_Description);
 
-
-
-
         if (mStepList !=null){
             populateTextViews();
 
@@ -76,4 +73,6 @@ public class DescriptionFragment extends Fragment {
         outState.putParcelableArrayList(STEPS_LIST_KEY, (ArrayList<? extends Parcelable>) mStepList);
         outState.putInt(STEP_LIST_INDEX,stepListIndex);
     }
+
+
 }
