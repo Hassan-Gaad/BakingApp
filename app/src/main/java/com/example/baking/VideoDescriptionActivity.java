@@ -1,12 +1,15 @@
 package com.example.baking;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.NavUtils;
 import androidx.fragment.app.FragmentManager;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -49,7 +52,10 @@ public class VideoDescriptionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_description);
         ButterKnife.bind(this);
-
+        ActionBar actionBar=this.getSupportActionBar();
+        if (actionBar!=null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         stepsList = getIntent().getParcelableArrayListExtra(STEPS_LIST_KEY);
         clickedStep = getIntent().getIntExtra(CLICKED_STEP_KEY, 0);
 
@@ -165,6 +171,14 @@ public class VideoDescriptionActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(STEPS_LIST_KEY,(ArrayList<? extends Parcelable>) stepsList);
         outState.putInt(CLICKED_STEP_KEY,clickedStep);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId()==android.R.id.home){
+            NavUtils.navigateUpFromSameTask(this);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

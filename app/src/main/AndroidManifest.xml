@@ -27,9 +27,23 @@
 
         <activity
             android:name=".VideoDescriptionActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"></activity>
-        <activity android:name=".DetailActivity" />
-        <activity android:name=".MainActivity">
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:parentActivityName=".DetailActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".DetailActivity"/>
+        </activity>
+
+        <activity android:name=".DetailActivity"
+            android:parentActivityName=".MainActivity"
+            android:launchMode="singleTop">
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".MainActivity"/>
+        </activity>
+
+        <activity android:name=".MainActivity"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

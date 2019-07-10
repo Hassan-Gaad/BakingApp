@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -35,15 +36,20 @@ import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.squareup.picasso.Picasso;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.http.Url;
 
 public class VideoFragment extends Fragment {
 
     private List<Steps> mStepList;
     private int stepListIndex;
 
+    private ImageView  imageViewThumbnail;
     private SimpleExoPlayerView exoPlayerView;
     private SimpleExoPlayer mExoPlayer;
     private static String STEPS_LIST_KEY="stepsList";
@@ -52,6 +58,8 @@ public class VideoFragment extends Fragment {
     private static String PLAYER_POSITION="position";
     private static String PLAYER_STATE="player_state";
     private static String TAG =DescriptionFragment.class.getSimpleName();
+    Uri videoUri;
+    Uri imgUri;
 
     long position ;
     boolean isPlayWhenReady;
@@ -70,16 +78,44 @@ public class VideoFragment extends Fragment {
 
         View view=inflater.inflate(R.layout.video_fragment,container,false);
         exoPlayerView=view.findViewById(R.id.simpleExoPlayerView);
+        imageViewThumbnail=view.findViewById(R.id.imageViewThumbnail);
         exoPlayerView.setDefaultArtwork(BitmapFactory.decodeResource(getResources(),R.drawable.no_video));
-        if (mExoPlayer==null){
-            initializePlayer(exoPlayerView,mStepList.get(stepListIndex));
+        videoUri=Uri.parse(mStepList.get(stepListIndex).getVideoUrl());
 
-        }else
-        {
-            Log.d(TAG,"stepList is null");
+
+        imgUri=Uri.parse(mStepList.get(stepListIndex).getThumbnailUrl());
+
+
+        if (videoUri!=null&& mExoPlayer==null ){
+            imageViewThumbnail.setVisibility(View.GONE);
+            exoPlayerView.setVisibility(View.VISIBLE);
+            initializePlayer(exoPlayerView,mStepList.get(stepListIndex));
+        }else if (videoUri==null && imgUri!=null){
+            exoPlayerView.setVisibility(View.GONE);
+            imageViewThumbnail.setVisibility(View.VISIBLE);
+            initializeThumbnail(imgUri);
+        }else{
+            exoPlayerView.setVisibility(View.GONE);
+            imageViewThumbnail.setVisibility(View.VISIBLE);
+            imageViewThumbnail.setImageResource(R.drawable.placeholder);
         }
 
-        return view;
+
+            return view;
+    }
+
+
+    private void initializeThumbnail(Uri imgUri){
+
+        if (imgUri.toString().endsWith(".png")||imgUri.toString().endsWith(".jpg")){
+            Picasso.get()
+                    .load(imgUri)
+                    .placeholder(R.drawable.no_image_available)
+                    .error(R.drawable.error_happend)
+                    .into(imageViewThumbnail);
+        }
+
+
     }
 
 
@@ -116,9 +152,7 @@ public class VideoFragment extends Fragment {
 
 
     private void initializePlayer(SimpleExoPlayerView playerView, Steps selectedStep) {
-        if (Uri.parse(selectedStep.getVideoUrl()) == null){
-            Toast.makeText(getContext(),"this step has no video", Toast.LENGTH_SHORT).show();
-        }else {
+
             TrackSelector trackSelector = new DefaultTrackSelector();
             LoadControl loadControl = new DefaultLoadControl();
 
@@ -136,7 +170,7 @@ public class VideoFragment extends Fragment {
             mExoPlayer.prepare(mediaSource);
             mExoPlayer.seekTo(position);
             mExoPlayer.setPlayWhenReady(isPlayWhenReady);
-        }
+
 
 
     }
@@ -153,15 +187,19 @@ public class VideoFragment extends Fragment {
         if (mExoPlayer != null) {
             position=mExoPlayer.getCurrentPosition();
             isPlayWhenReady=mExoPlayer.getPlayWhenReady();
+            releasePlayer();
         }
-        releasePlayer();
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mExoPlayer.setPlayWhenReady(isPlayWhenReady);
-        mExoPlayer.seekTo(position);
+        if (mExoPlayer!=null){
+            mExoPlayer.setPlayWhenReady(isPlayWhenReady);
+            mExoPlayer.seekTo(position);
+        }
+
     }
 
 

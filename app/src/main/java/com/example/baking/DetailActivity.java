@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NavUtils;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -45,8 +47,12 @@ public class DetailActivity extends AppCompatActivity implements StepsAdapter.st
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
-
         cake=getIntent().getParcelableExtra("Cake");
+        ActionBar actionBar=this.getSupportActionBar();
+        if (actionBar!=null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
         listIngredients=new ArrayList<>(cake.getIngredients());
         listSteps=new ArrayList<>(cake.getSteps());
         cakeName=cake.getName();
@@ -93,6 +99,8 @@ public class DetailActivity extends AppCompatActivity implements StepsAdapter.st
            intent.putExtra(WIDGET_SELECTED_CAKE,cake);
            intent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
            sendBroadcast(intent);
+        }else if(item.getItemId()==android.R.id.home){
+            NavUtils.navigateUpFromSameTask(this);
         }
 
         return super.onOptionsItemSelected(item);
